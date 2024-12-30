@@ -17,7 +17,88 @@ The primary goal of DataLens is to bridge this gap by not only providing reliabl
 5. **Source Citations**: Transparent sourcing with links to original data
 6. **User Authentication**: Secure account system for saving and reviewing past analyses
 
-### Technical Implementation:
+### Getting Started
+
+#### Prerequisites
+- Python 3.8 or higher
+- SQLite 3
+- Perplexity API key
+- Modern web browser with JavaScript enabled
+
+#### Installation and Setup
+
+1. **Clone the repository**:
+```bash
+git clone https://github.com/Francesco-Angeli/DataLens.git
+cd DataLens
+```
+
+2. **Install dependencies**:
+```bash
+pip install -r requirements.txt
+```
+
+3. **Environment Setup**:
+   - Create a `.env` file in the project root
+   - Add your Perplexity API key:
+   ```
+   PERPLEXITY_API_KEY=your_perplexity_api_key_here
+   ```
+   - You can get your API key from [Perplexity API](https://docs.perplexity.ai/)
+   - Reference `.env.example` for required variables format
+
+4. **Initialize the Database**:
+```bash
+sqlite3 stats.db
+```
+
+Then create the necessary tables by running these SQL commands:
+```sql
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    username TEXT NOT NULL UNIQUE,
+    hash TEXT NOT NULL
+);
+
+CREATE TABLE queries (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    query_text TEXT NOT NULL,
+    response_text TEXT NOT NULL,
+    graph_data TEXT NOT NULL,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    metadata TEXT,
+    FOREIGN KEY(user_id) REFERENCES users(id)
+);
+```
+
+5. **Project Structure**:
+```
+DataLens/
+├── app.py                 # Main application file
+├── helpers.py            # Helper functions
+├── requirements.txt      # Project dependencies
+├── .env.example         # Environment variables template
+├── static/              # Static assets
+│   ├── styles/         # CSS files
+│   └── background.js   # JavaScript files
+└── templates/           # HTML templates
+```
+
+6. **Run the Application**:
+```bash
+flask run
+```
+The application will be available at `http://localhost:5000`
+
+7. **First Use**:
+   - Register a new user account
+   - Log in to access the dashboard
+   - Enter your data analysis query
+   - Select geographic area and time range
+   - View the generated visualizations and analysis
+
+### Technical Implementation
 
 The project is built using Flask and follows a clear architectural structure:
 
@@ -47,7 +128,7 @@ The project is built using Flask and follows a clear architectural structure:
   - Animation definitions
   - Consistent styling variables
 
-### Design Decisions:
+### Design Decisions
 
 1. **API Choice**: Selected Perplexity API for its:
    - Comprehensive data access
@@ -76,40 +157,7 @@ The frontend adopts a minimalist, function-first approach with a component-based
    - Secure API key handling through environment variables
 
 5. **Database Design**:
-The application uses SQLite for its simplicity and efficiency. The database schema consists of two main tables:
-
-1. `users` table:
-   ```sql
-   CREATE TABLE users (
-       id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-       username TEXT NOT NULL UNIQUE,
-       hash TEXT NOT NULL
-   );
-   CREATE UNIQUE INDEX username ON users (username);
-   ```
-   - Manages user authentication
-   - Enforces unique usernames
-   - Stores secure password hashes
-   - Uses autoincrementing primary keys
-
-2. `queries` table:
-   ```sql
-   CREATE TABLE queries (
-       id INTEGER PRIMARY KEY AUTOINCREMENT,
-       user_id INTEGER,
-       query_text TEXT NOT NULL,
-       response_text TEXT NOT NULL,
-       graph_data TEXT NOT NULL,
-       timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-       metadata TEXT,
-       FOREIGN KEY(user_id) REFERENCES users(id)
-   );
-   ```
-   - Stores all user queries and their results
-   - Links to users through foreign key
-   - Includes timestamp for query tracking
-   - Stores graph data in JSON format
-   - Maintains metadata for additional context
+The application uses SQLite for its simplicity and efficiency. The database schema consists of two main tables as described in the installation section.
 
 This design was chosen for:
    - Simple deployment and maintenance
@@ -117,7 +165,25 @@ This design was chosen for:
    - Robust user management
    - Easy backup and restoration
 
-### Future Enhancements:
+### Troubleshooting
+
+Common issues and solutions:
+
+1. **Database Errors**:
+   - Ensure stats.db is properly initialized
+   - Check file permissions
+   - Verify SQL tables are created correctly
+
+2. **API Issues**:
+   - Confirm your API key is correct in .env
+   - Check your internet connection
+   - Verify API rate limits
+
+3. **Session Errors**:
+   - Clear flask_session directory
+   - Restart the application
+
+### Future Enhancements
 
 1. **Data Source Integration**:
    - Integration with open-source statistical databases
@@ -136,4 +202,3 @@ This design was chosen for:
    - User preferences customization
 
 DataLens transforms data analysis from a simple number-lookup into an insightful journey of discovery. By automatically providing context and related metrics, it helps users develop a more nuanced and complete understanding of statistical trends and their implications.
-
