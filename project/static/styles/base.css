@@ -1,0 +1,82 @@
+/* Variables */
+:root {
+    --primary: #202020;         /* Main color */
+    --secondary: #f2f2f2;       /* Secondary color */
+    --background: #fcfcfc;      /* Background */
+    --text: #1a1a1a;           /* Main text */
+    --surface: #ffffff;         /* Surfaces */
+
+    /* Primary color variants */
+    --primary-light: rgba(32, 32, 32, 0.1);
+    --primary-medium: rgba(32, 32, 32, 0.2);
+    --primary-dark: rgba(32, 32, 32, 0.8);
+    --shadow: rgba(32, 32, 32, 0.1);
+
+    /* Alert states */
+    --alert-danger: #ff4757;
+    --alert-success: #2ecc71;
+    --alert-warning: #ffa502;
+
+    /* Main line chart */
+    --chart-line: #5A6C57;        /* Medium olive green */
+    --chart-line-alpha: rgba(90, 108, 87, 0.2);
+
+    /* Bar charts */
+    --chart-bar-1: #8B7355;       /* Elegant wood brown */
+    --chart-bar-1-alpha: rgba(139, 115, 85, 0.2);
+
+    --chart-bar-2: #8E94B2;       /* Refined bluish grey */
+    --chart-bar-2-alpha: rgba(142, 148, 178, 0.2);
+
+    /* Pie chart/multi-series palette */
+    --chart-color-1: #5A6C57;     /* Medium olive green */
+    --chart-color-2: #D3F1DF;     /* Light mint green */
+    --chart-color-3: #85A98F;     /* Light sage green */
+    --chart-color-4: #525B44;     /* Dark olive green */
+    --chart-color-5: #96B89F;     /* Medium sage green (variant) */
+
+    /* Alternative emphasis colors */
+    --chart-emphasis: #D3F1DF;     /* Light mint green */
+    --chart-emphasis-alpha: rgba(211, 241, 223, 0.2);
+}
+
+/* Base Styles */
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: transparent;
+    color: var(--text);
+    min-height: 100vh;
+    position: relative;
+}
+
+/* Core Typography */
+h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+/* Basic Form Elements */
+input, button {
+    font-family: inherit;
+    pointer-events: auto;
+}
+
+/* Base Links */
+a {
+    color: var(--primary);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+a:hover {
+    color: var(--secondary);
+}
+
+/* Basic Container */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}

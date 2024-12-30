@@ -1,0 +1,18 @@
+/* Base styles and variables */
+@import 'base.css';
+
+/* layout */
+@import 'layout.css';
+
+/* Components */
+@import './components/auth.css';
+@import './components/search.css';
+@import './components/profile.css';
+@import './components/alerts.css';
+@import './components/loading.css';
+@import './components/results.css';
+@import './components/history.css';
+
+/* Animations and utilities */
+@import 'animations.css';
+@import 'utilities.css';

@@ -1,0 +1,112 @@
+/* Flash Messages Container */
+.flash-messages {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    width: 90%;
+    max-width: 500px;
+}
+
+/* Alert Base Styles */
+.alert {
+    border-radius: 50px;
+    padding: 1rem 2rem;
+    border: none;
+    background-color: var(--primary);
+    color: var(--surface);
+    box-shadow: 0 4px 12px var(--shadow);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    animation: slideIn 0.3s ease-out;
+}
+
+/* Alert Variants */
+.alert-primary {
+    background-color: var(--primary);
+    color: var(--surface);
+}
+
+.alert-danger {
+    background-color: var(--alert-danger);
+    color: var(--surface);
+}
+
+.alert-success {
+    background-color: var(--alert-success);
+    color: var(--surface);
+}
+
+.alert-warning {
+    background-color: var(--alert-warning);
+    color: var(--surface);
+}
+
+/* Close Button */
+.alert-close {
+    background: none;
+    border: none;
+    color: currentColor;
+    opacity: 0.7;
+    cursor: pointer;
+    padding: 0 0.5rem;
+    font-size: 1.2rem;
+    transition: opacity 0.3s ease;
+}
+
+.alert-close:hover {
+    opacity: 1;
+}
+
+/* Alert Animations rimangono invariate */
+@keyframes slideIn {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+/* Alert with Icon */
+.alert-with-icon {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.alert-icon {
+    font-size: 1.2rem;
+}
+
+/* Alert Content */
+.alert-content {
+    flex-grow: 1;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .flash-messages {
+        width: 95%;
+        top: 10px;
+    }
+
+    .alert {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.9rem;
+    }
+}

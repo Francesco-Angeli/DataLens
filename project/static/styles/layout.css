@@ -1,0 +1,90 @@
+/* Base Layout Structure for all pages */
+main {
+    position: relative;
+    min-height: 100vh;
+}
+
+/* Specific styles for home page */
+body[data-page="index"] main {
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* Particles Background (home page only) */
+#particles-js {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background: linear-gradient(to top, var(--surface), var(--secondary));
+    pointer-events: all;
+}
+
+/* Main Content Section */
+.query-section {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 250px 20px;
+    text-align: center;
+}
+
+.query-section h1 {
+    font-size: 30px;
+    font-family: 'Inter', sans-serif;
+    padding-bottom: 20px;
+}
+
+/* Results Container */
+.results-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Content Sections */
+.content-section {
+    background-color: var(--white);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Grid Layouts */
+.grid-container {
+    display: grid;
+    gap: 1.5rem;
+}
+
+/* Responsive Layout Adjustments */
+@media (max-width: 768px) {
+    .query-section {
+        padding: 80px 20px;
+    }
+
+    .results-container {
+        padding: 1rem;
+    }
+
+    .content-section {
+        padding: 1.5rem;
+    }
+}
+
+/* Flash Messages Layout */
+.flash-messages {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+}
+
+/* Error Container Layout */
+.error-container {
+    max-width: 600px;
+    margin: 4rem auto;
+    text-align: center;
+}

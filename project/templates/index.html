@@ -1,0 +1,299 @@
+{% extends "layout.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block main %}
+<div class="query-section">
+   <h1>Ask anything about statistics</h1>
+   <form id="queryForm" class="search-container">
+       <div class="search-wrapper">
+           <div class="input-group">
+               <input type="text" class="search-input" name="query" id="queryInput"
+                      placeholder="What would you like to know?" autocomplete="off" required>
+               <button type="button" id="showFilters" class="filter-toggle">
+                   <i class="bi bi-sliders"></i>
+               </button>
+           </div>
+       </div>
+
+       <div id="filtersPanel" class="filters-section">
+        <div class="filters-grid">
+            <div class="filter-group">
+                <label for="geoArea">Geographic Area</label>
+                <div class="select-wrapper">
+                    <select class="custom-select" id="geoArea" name="geoArea">
+                        <option value="italy" selected>Italy</option>
+                        <option value="eu">Europe</option>
+                        <option value="world">World</option>
+                        <option value="regions">Italian Regions</option>
+                    </select>
+                    <i class="bi bi-chevron-down"></i>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label>Time Range</label>
+                <div class="time-range">
+                    <div class="year-range-slider">
+                        <span class="year-display start">
+                            <span class="label-text">From</span>
+                            <span id="startYear" class="year-value">2019</span>
+                        </span>
+                        <input type="range"
+                               id="yearSlider"
+                               min="2000"
+                               max="2024"
+                               value="2019"
+                               class="year-slider">
+                        <span class="year-display end">
+                            <span class="label-text">To</span>
+                            <span class="year-value">2024</span>
+                        </span>
+                    </div>
+                    <div class="time-presets">
+                        <button type="button" class="preset-btn active" data-years="5">Last 5 years</button>
+                        <button type="button" class="preset-btn" data-years="10">Last decade</button>
+                        <button type="button" class="preset-btn" data-years="20">Last 20 years</button>
+                        <button type="button" class="preset-btn" data-years="0">All time</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+       <button type="submit" class="search-button">
+           <span class="button-text">Analyze data</span>
+           <i class="bi bi-arrow-right"></i>
+       </button>
+
+       <div id="loadingAnimation" class="loading-animation hidden">
+           <div class="dots-container">
+               <div class="dot-container">
+                   <div class="dot"></div>
+                   <div class="dot"></div>
+                   <div class="dot"></div>
+               </div>
+               <div class="dot-container">
+                   <div class="dot"></div>
+                   <div class="dot"></div>
+                   <div class="dot"></div>
+               </div>
+               <div class="dot-container">
+                   <div class="dot"></div>
+                   <div class="dot"></div>
+                   <div class="dot"></div>
+               </div>
+           </div>
+           <div id="streamingMessages" class="streaming-messages"></div>
+       </div>
+   </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const showFiltersBtn = document.getElementById('showFilters');
+    const filtersPanel = document.getElementById('filtersPanel');
+    const yearSlider = document.getElementById('yearSlider');
+    const startYearDisplay = document.getElementById('startYear');
+    const form = document.getElementById('queryForm');
+
+    // Handle filters panel open/close
+    showFiltersBtn.addEventListener('click', () => {
+        filtersPanel.classList.toggle('filters-active');
+        showFiltersBtn.classList.toggle('active');
+        if (filtersPanel.classList.contains('filters-active')) {
+            setTimeout(() => {
+                filtersPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+    });
+
+    // Handle slider
+    yearSlider.addEventListener('input', function() {
+        startYearDisplay.textContent = this.value;
+    });
+
+    // Handle time presets
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const years = parseInt(this.dataset.years);
+            const endYear = 2024;
+            const startYear = years === 0 ? 2000 : endYear - years;
+            yearSlider.value = startYear;
+            startYearDisplay.textContent = startYear;
+            document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    async function showLoadingMessages(streamingMessages, selectedArea) {
+        const messages = [
+            {
+                text: "Connecting to statistical databases...",
+                icon: "bi-database",
+                duration: 9000
+            },
+            {
+                text: `Accessing ${selectedArea} databases...`,
+                icon: "bi-globe",
+                duration: 9000
+            },
+            {
+                text: "Searching official sources...",
+                icon: "bi-search",
+                duration: 4000
+            },
+            {
+                text: "Analyzing time series...",
+                icon: "bi-graph-up",
+                duration: 7000
+            },
+            {
+                text: "Preparing statistical models...",
+                icon: "bi-calculator",
+                duration: 9000
+            }
+        ];
+
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message';
+        streamingMessages.appendChild(messageDiv);
+
+        let isLoading = true;
+
+        // Create a function that can be interrupted
+        const showMessages = async () => {
+            let index = 0;
+            while (isLoading && index < messages.length) {
+                const msg = messages[index];
+
+                // If not the first message, animate current message out
+                if (messageDiv.innerHTML) {
+                    messageDiv.classList.remove('active');
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                }
+
+                // Create new content
+                const newContent = `
+                    <div class="message-content">
+                        <i class="bi ${msg.icon}"></i>
+                        <span>${msg.text}</span>
+                    </div>
+                `;
+
+                messageDiv.innerHTML = newContent;
+
+                // Activate element animations
+                requestAnimationFrame(() => {
+                    messageDiv.classList.add('active');
+                });
+
+                await new Promise(resolve => setTimeout(resolve, msg.duration));
+                index++;
+
+                // If at last message and still loading, restart from first
+                if (index >= messages.length && isLoading) {
+                    index = 0;
+                }
+            }
+        };
+
+        // Start animation
+        const animationPromise = showMessages();
+
+        // Return function to stop animation and animation promise
+        return {
+            stop: () => {
+                isLoading = false;
+            },
+            messageDiv,
+            animationPromise
+        };
+    }
+
+    // Handle form submit
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const loadingAnimation = document.getElementById('loadingAnimation');
+        const streamingMessages = document.getElementById('streamingMessages');
+
+        const formData = new FormData(form);
+        const selectedArea = formData.get('geoArea') === 'italy' ? 'Italy' :
+                           formData.get('geoArea') === 'eu' ? 'Europe' :
+                           formData.get('geoArea') === 'world' ? 'World' : 'Italian Regions';
+
+        formData.append('startYear', yearSlider.value);
+        formData.append('endYear', '2024');
+
+        loadingAnimation.classList.remove('hidden');
+        void loadingAnimation.offsetWidth;
+        loadingAnimation.classList.add('visible');
+        streamingMessages.innerHTML = '';
+
+        const loading = await showLoadingMessages(streamingMessages, selectedArea);
+
+        try {
+            const response = await fetch('/query', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams(formData)
+            });
+
+            // Stop loading animation
+            loading.stop();
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+
+            while (true) {
+                const {value, done} = await reader.read();
+                if (done) break;
+
+                buffer += decoder.decode(value, {stream: true});
+                let lines = buffer.split('\n');
+                buffer = lines.pop() || '';
+
+                for (const line of lines) {
+                    if (line.trim() === '') continue;
+                    if (line.startsWith('data: ')) {
+                        try {
+                            const data = JSON.parse(line.slice(5));
+                            switch (data.type) {
+                                case 'redirect':
+                                    setTimeout(() => window.location.href = data.url, 500);
+                                    break;
+                                case 'error':
+                                    const errorDiv = document.createElement('div');
+                                    errorDiv.className = 'message error';
+                                    errorDiv.innerHTML = `
+                                        <i class="bi bi-exclamation-triangle"></i>
+                                        <span>Error: ${data.content}</span>
+                                    `;
+                                    streamingMessages.appendChild(errorDiv);
+                                    errorDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                                    break;
+                            }
+                        } catch (e) {
+                            console.error('Error parsing JSON:', e, line);
+                        }
+                    }
+                }
+            }
+        } catch (error) {
+            loading.stop();
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'message error';
+            errorDiv.innerHTML = `
+                <i class="bi bi-exclamation-triangle"></i>
+                <span>An error occurred: ${error.message}</span>
+            `;
+            streamingMessages.appendChild(errorDiv);
+            errorDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    });
+});
+</script>
+{% endblock %}

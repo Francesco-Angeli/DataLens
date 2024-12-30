@@ -1,0 +1,114 @@
+{% extends "layout.html" %}
+
+{% block title %}History{% endblock %}
+
+{% block main %}
+<div class="history-page">
+    <!-- Page Header -->
+    <div class="history-header">
+        <h1>Your Analyses</h1>
+        <a href="/" class="new-analysis-btn">
+            <i class="bi bi-plus-lg"></i>
+            New Analysis
+        </a>
+    </div>
+
+    <!-- Analysis List -->
+    <div class="history-list">
+        {% if queries %}
+            {% for query in queries %}
+            <div class="history-item">
+                <div class="history-item-header">
+                    <div class="query-info">
+                        <h3 class="query-text">{{ query.query_text }}</h3>
+                        <span class="query-date">{{ query.timestamp.strftime('%d/%m/%Y %H:%M') }}</span>
+                    </div>
+                    <div class="query-actions">
+                        <a href="/results/{{ query.id }}" class="view-btn">
+                            <i class="bi bi-eye"></i>
+                            View
+                        </a>
+                    </div>
+                </div>
+
+                {% if query.graph_data %}
+                <div class="preview-charts">
+                    {% set charts = query.graph_data|tojson %}
+                    <div class="chart-preview">
+                        <canvas id="chart_{{ loop.index }}"></canvas>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="response-preview">
+                    {{ query.response_text|markdown|truncate(200)|safe }}
+                    {% if query.response_text|length > 200 %}
+                        <a href="/results/{{ query.id }}" class="read-more">Read more...</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="bi bi-clock-history"></i>
+                <p>You haven't performed any analyses yet</p>
+                <a href="/" class="start-btn">Start now</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    {% if queries %}
+        {% for query in queries %}
+            {% if query.graph_data %}
+                const chartData{{ loop.index }} = {{ query.graph_data|safe }};
+                if (chartData{{ loop.index }}.charts && chartData{{ loop.index }}.charts[0]) {
+                    const ctx = document.getElementById('chart_{{ loop.index }}').getContext('2d');
+                    const mainChart = chartData{{ loop.index }}.charts[0];
+                    new Chart(ctx, {
+                        type: mainChart.type || 'line',
+                        data: {
+                            labels: mainChart.labels,
+                            datasets: [{
+                                label: mainChart.title,
+                                data: mainChart.data,
+                                backgroundColor: getComputedStyle(document.documentElement)
+                                    .getPropertyValue('--chart-line-alpha').trim(),
+                                borderColor: getComputedStyle(document.documentElement)
+                                    .getPropertyValue('--chart-line').trim(),
+                                borderWidth: 2,
+                                tension: 0.3
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: mainChart.title,
+                                    font: { size: 14, weight: 'bold' }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: false,
+                                    ticks: {
+                                        callback: function(value) {
+                                            return mainChart.format === 'percentage' ?
+                                                value + '%' : value;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+});
+</script>
+{% endblock %}

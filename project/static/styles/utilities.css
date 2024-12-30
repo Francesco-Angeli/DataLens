@@ -1,0 +1,165 @@
+/* Display Utilities */
+.hidden {
+    display: none !important;
+}
+
+.invisible {
+    visibility: hidden !important;
+}
+
+.visible {
+    visibility: visible !important;
+}
+
+/* Flex Utilities */
+.d-flex {
+    display: flex !important;
+}
+
+.flex-column {
+    flex-direction: column !important;
+}
+
+.justify-center {
+    justify-content: center !important;
+}
+
+.justify-between {
+    justify-content: space-between !important;
+}
+
+.align-center {
+    align-items: center !important;
+}
+
+/* Spacing Utilities */
+.m-0 { margin: 0 !important; }
+.m-1 { margin: 0.25rem !important; }
+.m-2 { margin: 0.5rem !important; }
+.m-3 { margin: 1rem !important; }
+.m-4 { margin: 1.5rem !important; }
+.m-5 { margin: 3rem !important; }
+
+.mt-auto { margin-top: auto !important; }
+.mb-auto { margin-bottom: auto !important; }
+.mx-auto {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+/* Padding Utilities */
+.p-0 { padding: 0 !important; }
+.p-1 { padding: 0.25rem !important; }
+.p-2 { padding: 0.5rem !important; }
+.p-3 { padding: 1rem !important; }
+.p-4 { padding: 1.5rem !important; }
+.p-5 { padding: 3rem !important; }
+
+/* Text Utilities */
+.text-center {
+    text-align: center !important;
+}
+
+.text-left {
+    text-align: left !important;
+}
+
+.text-right {
+    text-align: right !important;
+}
+
+/* Font Weight */
+.fw-light { font-weight: 300 !important; }
+.fw-normal { font-weight: 400 !important; }
+.fw-medium { font-weight: 500 !important; }
+.fw-bold { font-weight: 700 !important; }
+
+/* Width Utilities */
+.w-100 {
+    width: 100% !important;
+}
+
+.w-75 {
+    width: 75% !important;
+}
+
+.w-50 {
+    width: 50% !important;
+}
+
+.w-auto {
+    width: auto !important;
+}
+
+/* Position Utilities */
+.position-relative {
+    position: relative !important;
+}
+
+.position-absolute {
+    position: absolute !important;
+}
+
+.position-fixed {
+    position: fixed !important;
+}
+
+/* Border Utilities */
+.rounded {
+    border-radius: 0.25rem !important;
+}
+
+.rounded-lg {
+    border-radius: 0.5rem !important;
+}
+
+.rounded-circle {
+    border-radius: 50% !important;
+}
+
+/* Background Utilities */
+.bg-transparent {
+    background: transparent !important;
+}
+
+.bg-white {
+    background-color: var(--white) !important;
+}
+
+/* Shadow Utilities */
+.shadow-sm {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+}
+
+.shadow {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+.shadow-lg {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Z-index Utilities */
+.z-0 { z-index: 0 !important; }
+.z-1 { z-index: 1 !important; }
+.z-10 { z-index: 10 !important; }
+.z-100 { z-index: 100 !important; }
+.z-1000 { z-index: 1000 !important; }
+
+/* Overflow Utilities */
+.overflow-hidden {
+    overflow: hidden !important;
+}
+
+.overflow-auto {
+    overflow: auto !important;
+}
+
+/* Cursor Utilities */
+.cursor-pointer {
+    cursor: pointer !important;
+}
+
+.cursor-default {
+    cursor: default !important;
+}

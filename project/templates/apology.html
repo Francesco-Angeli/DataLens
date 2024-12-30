@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Error
+{% endblock %}
+
+{% block main %}
+    <div class="error-container">
+        <h1>{{ top }}</h1>
+        <p>{{ bottom }}</p>
+        <div>
+            <a href="/" class="btn btn-primary">Go Back</a>
+        </div>
+    </div>
+{% endblock %}

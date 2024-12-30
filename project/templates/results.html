@@ -1,0 +1,290 @@
+{% extends "layout.html" %}
+
+{% block title %}Results{% endblock %}
+
+{% block main %}
+<!-- Toggle Button for Mobile -->
+<button class="sidebar-toggle d-lg-none">
+    <i class="bi bi-list"></i>
+</button>
+
+<div class="results-page">
+    <div id="citations-data" data-citations='{{ citations|tojson|safe }}'></div>
+    <!-- Sidebar -->
+    <aside class="results-sidebar">
+        <!-- New Chat Button -->
+        <a href="/" class="new-chat-btn">
+            <i class="bi bi-plus-lg"></i>
+            New Analysis
+        </a>
+
+        <!-- Sources Section -->
+        <div class="sources-section">
+            <h3 class="sources-title">Sources</h3>
+            <ul class="sources-list">
+                {% if citations %}
+                    {% for citation in citations %}
+                        <li class="source-item">
+                            <a href="{{ citation }}" class="source-link" target="_blank">
+                                {{ citation }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    <li class="source-item">
+                        <span class="source-link">No sources available</span>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="results-content">
+        <!-- Query Display -->
+        <div class="query-display">
+            <p class="query-text">"{{ query_text }}"</p>
+        </div>
+
+        {% if charts %}
+        <!-- Chart Section -->
+        <!-- Main Chart -->
+        <div class="chart-section">
+            <div class="chart-container">
+                <canvas id="mainChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Pie Chart (second chart) -->
+        <div class="chart-section">
+            <div class="chart-container">
+                <canvas id="pieChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Two bar charts (third and fourth) side by side -->
+        <div class="chart-section d-flex justify-between">
+            <div class="chart-container" style="width:45%;">
+                <canvas id="barChart1"></canvas>
+            </div>
+            <div class="chart-container" style="width:45%;">
+                <canvas id="barChart2"></canvas>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Response Section -->
+        <div class="response-section">
+            <div class="response-box">
+                {{ response_text|markdown|safe }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script for Mobile Toggle and Chart Initialization -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebarToggle = document.querySelector('.sidebar-toggle');
+    const sidebar = document.querySelector('.results-sidebar');
+
+    // Helper function to get CSS variable value
+    function getCSSVariable(variable) {
+        return getComputedStyle(document.documentElement).getPropertyValue(variable).trim();
+    }
+
+    sidebarToggle?.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (sidebar.classList.contains('active') &&
+            !sidebar.contains(e.target) &&
+            !sidebarToggle.contains(e.target)) {
+            sidebar.classList.remove('active');
+        }
+    });
+
+    // CITATIONS CODE
+    const citations = {{ citations|tojson|safe }};
+    const responseBox = document.querySelector('.response-box');
+
+    if (responseBox && citations) {
+        responseBox.innerHTML = responseBox.innerHTML.replace(
+            /\[(\d+)\]/g,
+            (match, num) => {
+                const index = parseInt(num) - 1;
+                const citation = citations[index];
+                return citation ?
+                    `<a href="${citation}" class="citation-link" target="_blank" title="Open source">${num}</a>` :
+                    match;
+            }
+        );
+    }
+
+    try {
+        const chartsData = {{ charts|safe }};
+        console.log('Charts data:', chartsData);
+
+        if (chartsData && Array.isArray(chartsData) && chartsData.length === 4)
+        {
+            // Main chart (charts[0])
+            const mainChartData = chartsData[0];
+            if (mainChartData && document.getElementById('mainChart')) {
+                const ctxMain = document.getElementById('mainChart').getContext('2d');
+                new Chart(ctxMain, {
+                    type: mainChartData.type || 'line',
+                    data: {
+                        labels: mainChartData.labels,
+                        datasets: [{
+                            label: mainChartData.title,
+                            data: mainChartData.data,
+                            backgroundColor: getCSSVariable('--chart-line-alpha'),
+                            borderColor: getCSSVariable('--chart-line'),
+                            borderWidth: 2,
+                            tension: 0.3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: mainChartData.title,
+                                font: { size: 16, weight: 'bold' }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                ticks: {
+                                    callback: function(value) {
+                                        return mainChartData.format === 'percentage' ? value + '%' : value;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Pie chart (charts[1])
+            const pieData = chartsData[1];
+            if (pieData && document.getElementById('pieChart')) {
+                const ctxPie = document.getElementById('pieChart').getContext('2d');
+                new Chart(ctxPie, {
+                    type: pieData.type || 'pie',
+                    data: {
+                        labels: pieData.labels,
+                        datasets: [{
+                            data: pieData.data,
+                            backgroundColor: [
+                                getCSSVariable('--chart-color-1'),
+                                getCSSVariable('--chart-color-2'),
+                                getCSSVariable('--chart-color-3'),
+                                getCSSVariable('--chart-color-4'),
+                                getCSSVariable('--chart-color-5')
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: pieData.title,
+                                font: { size: 16, weight: 'bold' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // First bar chart (charts[2])
+            const barData1 = chartsData[2];
+            if (barData1 && document.getElementById('barChart1')) {
+                const ctxBar1 = document.getElementById('barChart1').getContext('2d');
+                new Chart(ctxBar1, {
+                    type: barData1.type || 'bar',
+                    data: {
+                        labels: barData1.labels,
+                        datasets: [{
+                            data: barData1.data,
+                            backgroundColor: getCSSVariable('--chart-bar-1-alpha'),
+                            borderColor: getCSSVariable('--chart-bar-1'),
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: barData1.title,
+                                font: { size: 16, weight: 'bold' }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                ticks: {
+                                    callback: function(value) {
+                                        return barData1.format === 'percentage' ? value + '%' : value;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Second bar chart (charts[3])
+            const barData2 = chartsData[3];
+            if (barData2 && document.getElementById('barChart2')) {
+                const ctxBar2 = document.getElementById('barChart2').getContext('2d');
+                new Chart(ctxBar2, {
+                    type: barData2.type || 'bar',
+                    data: {
+                        labels: barData2.labels,
+                        datasets: [{
+                            data: barData2.data,
+                            backgroundColor: getCSSVariable('--chart-bar-2-alpha'),
+                            borderColor: getCSSVariable('--chart-bar-2'),
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: barData2.title,
+                                font: { size: 16, weight: 'bold' }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                ticks: {
+                                    callback: function(value) {
+                                        return barData2.format === 'percentage' ? value + '%' : value;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        } else {
+            console.error('Invalid or incomplete chart data:', chartsData);
+        }
+    } catch (error) {
+        console.error('Error initializing charts:', error);
+    }
+});
+</script>
+{% endblock %}

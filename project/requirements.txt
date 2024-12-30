@@ -1,0 +1,8 @@
+flask
+flask-session
+cs50
+requests
+python-dotenv
+markdown2
+Werkzeug
+

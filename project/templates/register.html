@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Register
+{% endblock %}
+
+{% block main %}
+    <div class="auth-form">
+        <h2 class="text-center mb-4">Create Account</h2>
+
+        {% if get_flashed_messages() %}
+            <div class="alert alert-danger">
+                {{ get_flashed_messages() | join(" ") }}
+            </div>
+        {% endif %}
+
+        <form action="/register" method="post" onsubmit="return validatePasswords()">
+            <div class="mb-3">
+                <input class="form-control"
+                       type="text"
+                       name="username"
+                       placeholder="Username"
+                       autofocus
+                       required>
+            </div>
+            <div class="mb-3">
+                <input class="form-control"
+                       type="password"
+                       id="password"
+                       name="password"
+                       placeholder="Password"
+                       required>
+            </div>
+            <div class="mb-3">
+                <input class="form-control"
+                       type="password"
+                       id="confirmation"
+                       name="confirmation"
+                       placeholder="Confirm Password"
+                       required>
+                <div class="password-requirements">
+                    Password must be at least 8 characters long
+                </div>
+            </div>
+            <button class="btn btn-primary" type="submit">Register</button>
+        </form>
+
+        <div class="auth-links">
+            <p>Already have an account? <a href="/login">Log in here</a></p>
+        </div>
+    </div>
+
+    <script>
+        function validatePasswords() {
+            var password = document.getElementById("password").value;
+            var confirmation = document.getElementById("confirmation").value;
+
+            if (password.length < 8) {
+                alert("Password must be at least 8 characters long!");
+                return false;
+            }
+
+            if (password !== confirmation) {
+                alert("Passwords do not match!");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+{% endblock %}

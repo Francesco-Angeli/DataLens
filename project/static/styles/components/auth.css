@@ -1,0 +1,114 @@
+/* Auth Forms Container */
+.auth-form {
+    background-color: var(--surface);
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px var(--shadow);
+    max-width: 400px;
+    margin: 100px auto;
+}
+
+/* Form Controls */
+.form-control {
+    border-radius: 50px;
+    padding: 0.8rem 1.2rem;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.form-control:focus {
+    border-color: var(--primary);
+    box-shadow: none;
+    outline: none;
+}
+
+/* Form Groups */
+.mb-3 {
+    margin-bottom: 1.5rem;
+}
+
+/* Auth Buttons */
+.btn-primary {
+    background-color: var(--primary);
+    color: var(--surface);
+    border: none;
+    border-radius: 50px;
+    padding: 0.8rem 2rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary);
+    transform: translateY(-2px);
+}
+
+/* Alert Messages */
+.alert {
+    border-radius: 50px;
+    padding: 1rem 2rem;
+    margin-bottom: 1.5rem;
+    border: none;
+}
+
+.alert-danger {
+    background-color: #fff2f2;
+    color: #d63031;
+}
+
+/* Form Links */
+.auth-links {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.auth-links a {
+    color: var(--primary);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.auth-links a:hover {
+    color: var(--secondary);
+}
+
+/* Password Requirements */
+.password-requirements {
+    font-size: 0.9rem;
+    color: var(--text);
+    opacity: 0.8;
+    margin-top: 0.5rem;
+}
+
+/* Auto-complete Styles */
+.form-control:-webkit-autofill,
+.form-control:-webkit-autofill:hover,
+.form-control:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0px 1000px var(--surface) inset;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .auth-form {
+        margin: 50px auto;
+        padding: 2rem;
+        max-width: 90%;
+    }
+
+    .btn-primary {
+        padding: 0.7rem 1.5rem;
+    }
+}
+
+/* Custom width for specific inputs */
+.w-auto {
+    width: auto !important;
+}
+
+.mx-auto {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
