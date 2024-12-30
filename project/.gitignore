@@ -1,0 +1,21 @@
+# Database
+stats.db
+
+# Session files
+flask_session/
+
+# Environment variables
+.env
+
+# Cache
+__pycache__/
+*.pyc
+
+# System files
+.DS_Store
+.vscode/
+
+# Altri file temporanei
+*.log
+output.txt
+converter.txt
